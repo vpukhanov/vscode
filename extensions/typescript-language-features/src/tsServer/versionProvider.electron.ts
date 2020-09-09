@@ -104,8 +104,7 @@ export class DiskTypeScriptVersionProvider implements ITypeScriptVersionProvider
 			return [
 				new TypeScriptVersion(source,
 					serverPath,
-					DiskTypeScriptVersionProvider.getApiVersion(serverPath),
-					tsdkPathSetting)
+					DiskTypeScriptVersionProvider.getApiVersion(serverPath))
 			];
 		}
 

@@ -96,7 +96,6 @@
 					"type": "string",
 					"enum": [
 						"none",
-						"loginShell",
 						"loginInteractiveShell",
 						"interactiveShell"
 					],

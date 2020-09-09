@@ -20,9 +20,8 @@ import { NULL_STATE, nullTokenize, nullTokenize2 } from 'vs/editor/common/modes/
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IStandaloneThemeService } from 'vs/editor/standalone/common/standaloneThemeService';
 import { editorHoverBackground, editorHoverBorder, editorHoverForeground } from 'vs/platform/theme/common/colorRegistry';
-import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
+import { HIGH_CONTRAST, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
 import { InspectTokensNLS } from 'vs/editor/common/standaloneStrings';
-import { ColorScheme } from 'vs/platform/theme/common/theme';
 
 
 class InspectTokensController extends Disposable implements IEditorContribution {
@@ -333,7 +332,7 @@ registerEditorAction(InspectTokens);
 registerThemingParticipant((theme, collector) => {
 	const border = theme.getColor(editorHoverBorder);
 	if (border) {
-		let borderWidth = theme.type === ColorScheme.HIGH_CONTRAST ? 2 : 1;
+		let borderWidth = theme.type === HIGH_CONTRAST ? 2 : 1;
 		collector.addRule(`.monaco-editor .tokens-inspect-widget { border: ${borderWidth}px solid ${border}; }`);
 		collector.addRule(`.monaco-editor .tokens-inspect-widget .tokens-inspect-separator { background-color: ${border}; }`);
 	}

@@ -41,13 +41,13 @@ export interface INotebookService {
 	onDidChangeVisibleEditors: Event<string[]>;
 	onNotebookEditorAdd: Event<IEditor>;
 	onNotebookEditorsRemove: Event<IEditor[]>;
-	onDidRemoveNotebookDocument: Event<URI>;
-	onDidAddNotebookDocument: Event<NotebookTextModel>;
+	onNotebookDocumentRemove: Event<URI[]>;
+	onNotebookDocumentAdd: Event<URI[]>;
 	onNotebookDocumentSaved: Event<URI>;
 	onDidChangeKernels: Event<URI | undefined>;
 	onDidChangeNotebookActiveKernel: Event<{ uri: URI, providerHandle: number | undefined, kernelId: string | undefined }>;
-	registerNotebookController(viewType: string, extensionData: NotebookExtensionDescription, controller: IMainNotebookController): IDisposable;
-
+	registerNotebookController(viewType: string, extensionData: NotebookExtensionDescription, controller: IMainNotebookController): void;
+	unregisterNotebookProvider(viewType: string): void;
 	transformEditsOutputs(textModel: NotebookTextModel, edits: ICellEditOperation[]): void;
 	transformSpliceOutputs(textModel: NotebookTextModel, splices: NotebookCellOutputsSplice[]): void;
 	registerNotebookKernelProvider(provider: INotebookKernelProvider): IDisposable;

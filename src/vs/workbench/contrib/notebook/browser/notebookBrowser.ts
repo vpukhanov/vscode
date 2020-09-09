@@ -233,7 +233,6 @@ export interface INotebookEditor extends IEditor {
 	getDomNode(): HTMLElement;
 	getOverflowContainerDomNode(): HTMLElement;
 	getInnerWebview(): Webview | undefined;
-	getSelectionHandles(): number[];
 
 	/**
 	 * Focus the notebook editor cell list
@@ -508,7 +507,7 @@ export interface INotebookCellList {
 	layout(height?: number, width?: number): void;
 	dispose(): void;
 
-	// TODO@roblourens resolve differences between List<CellViewModel> and INotebookCellList<ICellViewModel>
+	// TODO resolve differences between List<CellViewModel> and INotebookCellList<ICellViewModel>
 	getFocus(): number[];
 	setFocus(indexes: number[]): void;
 	setSelection(indexes: number[]): void;
@@ -699,7 +698,7 @@ export function getVisibleCells(cells: CellViewModel[], hiddenRanges: ICellRange
 }
 
 export function getActiveNotebookEditor(editorService: IEditorService): INotebookEditor | undefined {
-	// TODO@rebornix can `isNotebookEditor` be on INotebookEditor to avoid a circular dependency?
+	// TODO can `isNotebookEditor` be on INotebookEditor to avoid a circular dependency?
 	const activeEditorPane = editorService.activeEditorPane as unknown as { isNotebookEditor?: boolean } | undefined;
 	return activeEditorPane?.isNotebookEditor ? (editorService.activeEditorPane?.getControl() as INotebookEditor) : undefined;
 }

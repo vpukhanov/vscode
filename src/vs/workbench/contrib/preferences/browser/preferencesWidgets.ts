@@ -192,15 +192,15 @@ export class SettingsGroupTitleWidget extends Widget implements IViewZone {
 	}
 
 	toggleCollapse(collapse: boolean) {
-		this.titleContainer.classList.toggle('collapsed', collapse);
+		DOM.toggleClass(this.titleContainer, 'collapsed', collapse);
 	}
 
 	toggleFocus(focus: boolean): void {
-		this.titleContainer.classList.toggle('focused', focus);
+		DOM.toggleClass(this.titleContainer, 'focused', focus);
 	}
 
 	isCollapsed(): boolean {
-		return this.titleContainer.classList.contains('collapsed');
+		return DOM.hasClass(this.titleContainer, 'collapsed');
 	}
 
 	private layout(): void {
@@ -256,7 +256,7 @@ export class SettingsGroupTitleWidget extends Widget implements IViewZone {
 
 	private collapse(collapse: boolean) {
 		if (collapse !== this.isCollapsed()) {
-			this.titleContainer.classList.toggle('collapsed', collapse);
+			DOM.toggleClass(this.titleContainer, 'collapsed', collapse);
 			this._onToggled.fire(collapse);
 		}
 	}
@@ -412,17 +412,17 @@ export class FolderSettingsActionViewItem extends BaseActionViewItem {
 			this.anchorElement.title = (await this.preferencesService.getEditableSettingsURI(ConfigurationTarget.WORKSPACE_FOLDER, this._folder.uri))?.fsPath || '';
 			const detailsText = this.labelWithCount(this._action.label, total);
 			this.detailsElement.textContent = detailsText;
-			this.dropDownElement.classList.toggle('hide', workspace.folders.length === 1 || !this._action.checked);
+			DOM.toggleClass(this.dropDownElement, 'hide', workspace.folders.length === 1 || !this._action.checked);
 		} else {
 			const labelText = this.labelWithCount(this._action.label, total);
 			this.labelElement.textContent = labelText;
 			this.detailsElement.textContent = '';
 			this.anchorElement.title = this._action.label;
-			this.dropDownElement.classList.remove('hide');
+			DOM.removeClass(this.dropDownElement, 'hide');
 		}
 
-		this.anchorElement.classList.toggle('checked', this._action.checked);
-		this.container.classList.toggle('disabled', !this._action.enabled);
+		DOM.toggleClass(this.anchorElement, 'checked', this._action.checked);
+		DOM.toggleClass(this.container, 'disabled', !this._action.enabled);
 	}
 
 	private showMenu(): void {
@@ -595,7 +595,7 @@ export class SettingsTargetsWidget extends Widget {
 	}
 
 	private async update(): Promise<void> {
-		this.settingsSwitcherBar.domNode.classList.toggle('empty-workbench', this.contextService.getWorkbenchState() === WorkbenchState.EMPTY);
+		DOM.toggleClass(this.settingsSwitcherBar.domNode, 'empty-workbench', this.contextService.getWorkbenchState() === WorkbenchState.EMPTY);
 		this.userRemoteSettings.enabled = !!(this.options.enableRemoteSettings && this.environmentService.configuration.remoteAuthority);
 		this.workspaceSettings.enabled = this.contextService.getWorkbenchState() !== WorkbenchState.EMPTY;
 		this.folderSettings.getAction().enabled = this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE && this.contextService.getWorkspace().folders.length > 0;
@@ -697,13 +697,13 @@ export class SearchWidget extends Widget {
 	layout(dimension: DOM.Dimension) {
 		if (dimension.width < 400) {
 			if (this.countElement) {
-				this.countElement.classList.add('hide');
+				DOM.addClass(this.countElement, 'hide');
 			}
 
 			this.inputBox.inputElement.style.paddingRight = '0px';
 		} else {
 			if (this.countElement) {
-				this.countElement.classList.remove('hide');
+				DOM.removeClass(this.countElement, 'hide');
 			}
 
 			this.inputBox.inputElement.style.paddingRight = this.getControlsWidth() + 'px';

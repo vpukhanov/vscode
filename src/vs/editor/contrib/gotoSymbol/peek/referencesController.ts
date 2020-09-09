@@ -5,7 +5,7 @@
 
 import * as nls from 'vs/nls';
 import { onUnexpectedError } from 'vs/base/common/errors';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { dispose, DisposableStore } from 'vs/base/common/lifecycle';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
 import { IContextKey, IContextKeyService, RawContextKey, ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
@@ -64,8 +64,8 @@ export abstract class ReferencesController implements IEditorContribution {
 	dispose(): void {
 		this._referenceSearchVisible.reset();
 		this._disposables.dispose();
-		this._widget?.dispose();
-		this._model?.dispose();
+		dispose(this._widget);
+		dispose(this._model);
 		this._widget = undefined;
 		this._model = undefined;
 	}
@@ -226,8 +226,8 @@ export abstract class ReferencesController implements IEditorContribution {
 	}
 
 	closeWidget(focusEditor = true): void {
-		this._widget?.dispose();
-		this._model?.dispose();
+		dispose(this._widget);
+		dispose(this._model);
 		this._referenceSearchVisible.reset();
 		this._disposables.clear();
 		this._widget = undefined;

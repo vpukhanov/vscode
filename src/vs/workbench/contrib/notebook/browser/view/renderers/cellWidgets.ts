@@ -77,8 +77,8 @@ export class CellEditorStatusBar extends Disposable {
 			return;
 		}
 
-		DOM.clearNode(this.leftContributedItemsContainer);
-		DOM.clearNode(this.rightContributedItemsContainer);
+		this.leftContributedItemsContainer.innerHTML = '';
+		this.rightContributedItemsContainer.innerHTML = '';
 		this.itemsDisposable.clear();
 
 		const items = this.notebookCellStatusBarService.getEntries(this.currentContext.cell.uri);

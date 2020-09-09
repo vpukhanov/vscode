@@ -18,7 +18,7 @@ import { IThemeService, IColorTheme } from 'vs/platform/theme/common/themeServic
 import { ACTIVITY_BAR_BACKGROUND, ACTIVITY_BAR_BORDER, ACTIVITY_BAR_FOREGROUND, ACTIVITY_BAR_ACTIVE_BORDER, ACTIVITY_BAR_BADGE_BACKGROUND, ACTIVITY_BAR_BADGE_FOREGROUND, ACTIVITY_BAR_INACTIVE_FOREGROUND, ACTIVITY_BAR_ACTIVE_BACKGROUND, ACTIVITY_BAR_DRAG_AND_DROP_BORDER } from 'vs/workbench/common/theme';
 import { contrastBorder } from 'vs/platform/theme/common/colorRegistry';
 import { CompositeBar, ICompositeBarItem, CompositeDragAndDrop } from 'vs/workbench/browser/parts/compositeBar';
-import { Dimension, createCSSRule, asCSSUrl, addDisposableListener, EventType } from 'vs/base/browser/dom';
+import { Dimension, addClass, removeNode, createCSSRule, asCSSUrl, toggleClass, addDisposableListener, EventType } from 'vs/base/browser/dom';
 import { IStorageService, StorageScope, IWorkspaceStorageChangeEvent } from 'vs/platform/storage/common/storage';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
 import { URI, UriComponents } from 'vs/base/common/uri';
@@ -404,7 +404,7 @@ export class ActivitybarPart extends Part implements IActivityBarService {
 		}
 
 		if (this.menuBarContainer) {
-			this.menuBarContainer.remove();
+			removeNode(this.menuBarContainer);
 			this.menuBarContainer = undefined;
 			this.registerKeyboardNavigationListeners();
 		}
@@ -412,7 +412,7 @@ export class ActivitybarPart extends Part implements IActivityBarService {
 
 	private installMenubar() {
 		this.menuBarContainer = document.createElement('div');
-		this.menuBarContainer.classList.add('menubar');
+		addClass(this.menuBarContainer, 'menubar');
 
 		const content = assertIsDefined(this.content);
 		content.prepend(this.menuBarContainer);
@@ -428,7 +428,7 @@ export class ActivitybarPart extends Part implements IActivityBarService {
 		this.element = parent;
 
 		this.content = document.createElement('div');
-		this.content.classList.add('content');
+		addClass(this.content, 'content');
 		parent.appendChild(this.content);
 
 		// Home action bar
@@ -454,7 +454,7 @@ export class ActivitybarPart extends Part implements IActivityBarService {
 
 		// Global action bar
 		this.globalActivitiesContainer = document.createElement('div');
-		this.globalActivitiesContainer.classList.add('global-activity');
+		addClass(this.globalActivitiesContainer, 'global-activity');
 		this.content.appendChild(this.globalActivitiesContainer);
 
 		this.createGlobalActivityActionBar(this.globalActivitiesContainer);
@@ -535,7 +535,7 @@ export class ActivitybarPart extends Part implements IActivityBarService {
 		this.homeBarContainer = document.createElement('div');
 		this.homeBarContainer.setAttribute('aria-label', nls.localize('homeIndicator', "Home"));
 		this.homeBarContainer.setAttribute('role', 'toolbar');
-		this.homeBarContainer.classList.add('home-bar');
+		addClass(this.homeBarContainer, 'home-bar');
 
 		this.homeBar = this._register(new ActionBar(this.homeBarContainer, {
 			orientation: ActionsOrientation.VERTICAL,
@@ -547,7 +547,7 @@ export class ActivitybarPart extends Part implements IActivityBarService {
 		}));
 
 		const homeBarIconBadge = document.createElement('div');
-		homeBarIconBadge.classList.add('home-bar-icon-badge');
+		addClass(homeBarIconBadge, 'home-bar-icon-badge');
 		this.homeBarContainer.appendChild(homeBarIconBadge);
 		this.homeBar.push(this._register(this.instantiationService.createInstance(HomeAction, href, title, icon)));
 
@@ -563,7 +563,7 @@ export class ActivitybarPart extends Part implements IActivityBarService {
 		container.style.backgroundColor = background;
 
 		const borderColor = this.getColor(ACTIVITY_BAR_BORDER) || this.getColor(contrastBorder) || '';
-		container.classList.toggle('bordered', !!borderColor);
+		toggleClass(container, 'bordered', !!borderColor);
 		container.style.borderColor = borderColor ? borderColor : '';
 	}
 

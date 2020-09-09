@@ -10,7 +10,6 @@ import * as platform from 'vs/platform/registry/common/platform';
 import { ColorIdentifier } from 'vs/platform/theme/common/colorRegistry';
 import { Event, Emitter } from 'vs/base/common/event';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { ColorScheme } from 'vs/platform/theme/common/theme';
 
 export const IThemeService = createDecorator<IThemeService>('themeService');
 
@@ -66,10 +65,16 @@ export namespace ThemeIcon {
 export const FileThemeIcon = { id: 'file' };
 export const FolderThemeIcon = { id: 'folder' };
 
-export function getThemeTypeSelector(type: ColorScheme): string {
+// base themes
+export const DARK: ThemeType = 'dark';
+export const LIGHT: ThemeType = 'light';
+export const HIGH_CONTRAST: ThemeType = 'hc';
+export type ThemeType = 'light' | 'dark' | 'hc';
+
+export function getThemeTypeSelector(type: ThemeType): string {
 	switch (type) {
-		case ColorScheme.DARK: return 'vs-dark';
-		case ColorScheme.HIGH_CONTRAST: return 'hc-black';
+		case DARK: return 'vs-dark';
+		case HIGH_CONTRAST: return 'hc-black';
 		default: return 'vs';
 	}
 }
@@ -83,7 +88,7 @@ export interface ITokenStyle {
 
 export interface IColorTheme {
 
-	readonly type: ColorScheme;
+	readonly type: ThemeType;
 
 	readonly label: string;
 

@@ -346,10 +346,10 @@ class MarkerWidget extends Disposable {
 		if (viewModel) {
 			const quickFixAction = viewModel.quickFixAction;
 			this.actionBar.push([quickFixAction], { icon: true, label: false });
-			this.icon.classList.toggle('quickFix', quickFixAction.enabled);
+			dom.toggleClass(this.icon, 'quickFix', quickFixAction.enabled);
 			quickFixAction.onDidChange(({ enabled }) => {
 				if (!isUndefinedOrNull(enabled)) {
-					this.icon.classList.toggle('quickFix', enabled);
+					dom.toggleClass(this.icon, 'quickFix', enabled);
 				}
 			}, this, this.disposables);
 			quickFixAction.onShowQuickFixes(() => {
@@ -393,7 +393,7 @@ class MarkerWidget extends Disposable {
 	}
 
 	private renderDetails(marker: IMarker, filterData: MarkerFilterData | undefined, parent: HTMLElement): void {
-		parent.classList.add('details-container');
+		dom.addClass(parent, 'details-container');
 
 		if (marker.source || marker.code) {
 			const source = new HighlightedLabel(dom.append(parent, dom.$('.marker-source')), false);

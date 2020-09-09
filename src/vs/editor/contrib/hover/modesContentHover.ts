@@ -240,11 +240,11 @@ export class ModesContentHoverWidget extends ContentHoverWidget {
 
 		this._register(dom.addStandardDisposableListener(this.getDomNode(), dom.EventType.FOCUS, () => {
 			if (this._colorPicker) {
-				this.getDomNode().classList.add('colorpicker-hover');
+				dom.addClass(this.getDomNode(), 'colorpicker-hover');
 			}
 		}));
 		this._register(dom.addStandardDisposableListener(this.getDomNode(), dom.EventType.BLUR, () => {
-			this.getDomNode().classList.remove('colorpicker-hover');
+			dom.removeClass(this.getDomNode(), 'colorpicker-hover');
 		}));
 		this._register(editor.onDidChangeConfiguration((e) => {
 			this._hoverOperation.setHoverTime(this._editor.getOption(EditorOption.hover).delay);

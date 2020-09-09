@@ -108,7 +108,7 @@ export class NotebookCellTextModel extends Disposable implements ICell {
 			return this._hash;
 		}
 
-		// TODO@rebornix, raw outputs
+		// TODO, raw outputs
 		this._hash = hash([hash(this.getValue()), this._getPersisentMetadata, this.transientOptions.transientOutputs ? [] : this._outputs]);
 		return this._hash;
 	}

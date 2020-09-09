@@ -276,6 +276,8 @@ export interface INotebookTextModel {
 	readonly versionId: number;
 	languages: string[];
 	readonly cells: readonly ICell[];
+	onDidChangeCells: Event<{ synchronous: boolean, splices: NotebookCellTextModelSplice[] }>;
+	onDidChangeContent: Event<void>;
 	onWillDispose(listener: () => void): IDisposable;
 }
 
@@ -309,10 +311,10 @@ export type IRenderOutput = IRenderNoOutput | IInsetRenderOutput;
 
 export const outputHasDynamicHeight = (o: IRenderOutput) => o.type !== RenderOutputType.Extension && o.hasDynamicHeight;
 
-export type NotebookCellTextModelSplice<T> = [
+export type NotebookCellTextModelSplice = [
 	number /* start */,
 	number,
-	T[]
+	ICell[]
 ];
 
 export type NotebookCellOutputsSplice = [
@@ -345,35 +347,26 @@ export enum NotebookCellsChangeType {
 	CellsClearOutput = 4,
 	ChangeLanguage = 5,
 	Initialize = 6,
-	ChangeCellMetadata = 7,
+	ChangeMetadata = 7,
 	Output = 8,
-	ChangeCellContent = 9,
-	ChangeDocumentMetadata = 10
 }
 
-export interface NotebookCellsInitializeEvent<T> {
+export interface NotebookCellsInitializeEvent {
 	readonly kind: NotebookCellsChangeType.Initialize;
-	readonly changes: NotebookCellTextModelSplice<T>[];
+	readonly changes: NotebookCellsSplice2[];
 	readonly versionId: number;
 }
 
-export interface NotebookCellContentChangeEvent {
-	readonly kind: NotebookCellsChangeType.ChangeCellContent;
-	readonly versionId: number;
-}
-
-export interface NotebookCellsModelChangedEvent<T> {
+export interface NotebookCellsModelChangedEvent {
 	readonly kind: NotebookCellsChangeType.ModelChange;
-	readonly changes: NotebookCellTextModelSplice<T>[];
+	readonly changes: NotebookCellsSplice2[];
 	readonly versionId: number;
 }
 
-export interface NotebookCellsModelMoveEvent<T> {
+export interface NotebookCellsModelMoveEvent {
 	readonly kind: NotebookCellsChangeType.Move;
 	readonly index: number;
-	readonly length: number;
 	readonly newIdx: number;
-	readonly cells: T[];
 	readonly versionId: number;
 }
 
@@ -382,7 +375,17 @@ export interface NotebookOutputChangedEvent {
 	readonly index: number;
 	readonly versionId: number;
 	readonly outputs: IProcessedOutput[];
-	readonly transient: boolean;
+}
+
+export interface NotebookCellClearOutputEvent {
+	readonly kind: NotebookCellsChangeType.CellClearOutput;
+	readonly index: number;
+	readonly versionId: number;
+}
+
+export interface NotebookCellsClearOutputEvent {
+	readonly kind: NotebookCellsChangeType.CellsClearOutput;
+	readonly versionId: number;
 }
 
 export interface NotebookCellsChangeLanguageEvent {
@@ -393,20 +396,13 @@ export interface NotebookCellsChangeLanguageEvent {
 }
 
 export interface NotebookCellsChangeMetadataEvent {
-	readonly kind: NotebookCellsChangeType.ChangeCellMetadata;
+	readonly kind: NotebookCellsChangeType.ChangeMetadata;
 	readonly versionId: number;
 	readonly index: number;
 	readonly metadata: NotebookCellMetadata | undefined;
 }
 
-export interface NotebookDocumentChangeMetadataEvent {
-	readonly kind: NotebookCellsChangeType.ChangeDocumentMetadata;
-	readonly versionId: number;
-	readonly metadata: NotebookDocumentMetadata | undefined;
-}
-
-export type NotebookCellsChangedEventDto = NotebookCellsInitializeEvent<IMainCellDto> | NotebookDocumentChangeMetadataEvent | NotebookCellContentChangeEvent | NotebookCellsModelChangedEvent<IMainCellDto> | NotebookCellsModelMoveEvent<IMainCellDto> | NotebookOutputChangedEvent | NotebookCellsChangeLanguageEvent | NotebookCellsChangeMetadataEvent;
-export type NotebookTextModelChangedEvent = (NotebookCellsInitializeEvent<ICell> | NotebookDocumentChangeMetadataEvent | NotebookCellContentChangeEvent | NotebookCellsModelChangedEvent<ICell> | NotebookCellsModelMoveEvent<ICell> | NotebookOutputChangedEvent | NotebookCellsChangeLanguageEvent | NotebookCellsChangeMetadataEvent) & { synchronous: boolean; endSelections?: number[] };
+export type NotebookCellsChangedEvent = NotebookCellsInitializeEvent | NotebookCellsModelChangedEvent | NotebookCellsModelMoveEvent | NotebookOutputChangedEvent | NotebookCellClearOutputEvent | NotebookCellsClearOutputEvent | NotebookCellsChangeLanguageEvent | NotebookCellsChangeMetadataEvent;
 
 export const enum CellEditType {
 	Replace = 1,
@@ -691,8 +687,6 @@ export interface IEditor extends editorCommon.ICompositeCodeEditor {
 	readonly onDidChangeModel: Event<NotebookTextModel | undefined>;
 	readonly onDidFocusEditorWidget: Event<void>;
 	readonly onDidChangeVisibleRanges: Event<void>;
-	readonly onDidChangeSelection: Event<void>;
-	getSelectionHandles(): number[];
 	isNotebookEditor: boolean;
 	visibleRanges: ICellRange[];
 	uri?: URI;

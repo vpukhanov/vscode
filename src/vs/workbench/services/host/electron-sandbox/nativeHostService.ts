@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
+import { Emitter, Event } from 'vs/base/common/event';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
 import { IElectronService } from 'vs/platform/electron/electron-sandbox/electron';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { ILabelService } from 'vs/platform/label/common/label';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IWindowOpenable, IOpenWindowOptions, isFolderToOpen, isWorkspaceToOpen, IOpenEmptyWindowOptions } from 'vs/platform/windows/common/windows';
+import { IWindowOpenable, IOpenWindowOptions, isFolderToOpen, isWorkspaceToOpen, IOpenEmptyWindowOptions, ColorScheme } from 'vs/platform/windows/common/windows';
 import { Disposable } from 'vs/base/common/lifecycle';
 
 export class NativeHostService extends Disposable implements IHostService {
@@ -22,7 +22,20 @@ export class NativeHostService extends Disposable implements IHostService {
 		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService
 	) {
 		super();
+
+		this.registerListeners();
 	}
+
+	private registerListeners(): void {
+
+		// Color Scheme
+		this._register(this.electronService.onColorSchemeChange(scheme => {
+			this._colorScheme = scheme;
+
+			this._onDidChangeColorScheme.fire();
+		}));
+	}
+
 
 	//#region Focus
 
@@ -88,6 +101,17 @@ export class NativeHostService extends Disposable implements IHostService {
 	toggleFullScreen(): Promise<void> {
 		return this.electronService.toggleFullScreen();
 	}
+
+	//#endregion
+
+
+	//#region Color Scheme
+
+	private readonly _onDidChangeColorScheme = this._register(new Emitter<void>());
+	readonly onDidChangeColorScheme = this._onDidChangeColorScheme.event;
+
+	private _colorScheme: ColorScheme = this.environmentService.configuration.colorScheme;
+	get colorScheme() { return this._colorScheme; }
 
 	//#endregion
 

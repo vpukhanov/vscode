@@ -55,8 +55,8 @@ class SymbolNavigationService implements ISymbolNavigationService {
 
 	reset(): void {
 		this._ctxHasSymbols.reset();
-		this._currentState?.dispose();
-		this._currentMessage?.dispose();
+		dispose(this._currentState);
+		dispose(this._currentMessage);
 		this._currentModel = undefined;
 		this._currentIdx = -1;
 	}
@@ -138,7 +138,7 @@ class SymbolNavigationService implements ISymbolNavigationService {
 
 	private _showMessage(): void {
 
-		this._currentMessage?.dispose();
+		dispose(this._currentMessage);
 
 		const kb = this._keybindingService.lookupKeybinding('editor.gotoNextSymbolFromResult');
 		const message = kb
@@ -209,7 +209,7 @@ class EditorState {
 	}
 
 	private _onDidRemoveEditor(editor: ICodeEditor): void {
-		this._listener.get(editor)?.dispose();
+		dispose(this._listener.get(editor));
 		this._listener.delete(editor);
 	}
 }

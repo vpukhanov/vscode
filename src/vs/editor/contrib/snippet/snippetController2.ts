@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { dispose, DisposableStore } from 'vs/base/common/lifecycle';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { EditorCommand, registerEditorCommand, registerEditorContribution } from 'vs/editor/browser/editorExtensions';
 import { Range } from 'vs/editor/common/core/range';
@@ -75,7 +75,7 @@ export class SnippetController2 implements IEditorContribution {
 		this._inSnippet.reset();
 		this._hasPrevTabstop.reset();
 		this._hasNextTabstop.reset();
-		this._session?.dispose();
+		dispose(this._session);
 		this._snippetListener.dispose();
 	}
 
@@ -211,7 +211,7 @@ export class SnippetController2 implements IEditorContribution {
 		this._hasPrevTabstop.reset();
 		this._hasNextTabstop.reset();
 		this._snippetListener.clear();
-		this._session?.dispose();
+		dispose(this._session);
 		this._session = undefined;
 		this._modelVersionId = -1;
 		if (resetSelection) {

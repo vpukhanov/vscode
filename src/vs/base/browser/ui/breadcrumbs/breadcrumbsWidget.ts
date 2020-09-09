@@ -118,7 +118,7 @@ export class BreadcrumbsWidget {
 
 	dispose(): void {
 		this._disposables.dispose();
-		this._pendingLayout?.dispose();
+		dispose(this._pendingLayout);
 		this._onDidSelectItem.dispose();
 		this._onDidFocusItem.dispose();
 		this._onDidChangeFocus.dispose();
@@ -131,7 +131,9 @@ export class BreadcrumbsWidget {
 		if (dim && dom.Dimension.equals(dim, this._dimension)) {
 			return;
 		}
-		this._pendingLayout?.dispose();
+		if (this._pendingLayout) {
+			this._pendingLayout.dispose();
+		}
 		if (dim) {
 			// only measure
 			this._pendingLayout = this._updateDimensions(dim);

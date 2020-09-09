@@ -6,6 +6,7 @@
 import * as nls from 'vs/nls';
 import * as path from 'vs/base/common/path';
 import * as pfs from 'vs/base/node/pfs';
+import { assign } from 'vs/base/common/objects';
 import { toDisposable, Disposable } from 'vs/base/common/lifecycle';
 import { isNonEmptyArray } from 'vs/base/common/arrays';
 import { zip, IFile } from 'vs/base/node/zip';
@@ -45,7 +46,6 @@ import { IExtensionManifest, ExtensionType } from 'vs/platform/extensions/common
 import { ExtensionsDownloader } from 'vs/platform/extensionManagement/node/extensionDownloader';
 import { ExtensionsScanner, IMetadata } from 'vs/platform/extensionManagement/node/extensionsScanner';
 import { ExtensionsLifecycle } from 'vs/platform/extensionManagement/node/extensionLifecycle';
-import { IStringDictionary } from 'vs/base/common/collections';
 
 const INSTALL_ERROR_UNSET_UNINSTALLED = 'unsetUninstalled';
 const INSTALL_ERROR_DOWNLOADING = 'downloading';
@@ -677,10 +677,7 @@ export class ExtensionManagementService extends Disposable implements IExtension
 
 	private setUninstalled(...extensions: ILocalExtension[]): Promise<{ [id: string]: boolean }> {
 		const ids: ExtensionIdentifierWithVersion[] = extensions.map(e => new ExtensionIdentifierWithVersion(e.identifier, e.manifest.version));
-		return this.extensionsScanner.withUninstalledExtensions(uninstalled => {
-			const newUninstalled = (ids.reduce<IStringDictionary<boolean>>((result, id) => { result[id.key()] = true; return result; }, {}));
-			return { ...uninstalled, ...newUninstalled };
-		});
+		return this.extensionsScanner.withUninstalledExtensions(uninstalled => assign(uninstalled, ids.reduce((result, id) => { result[id.key()] = true; return result; }, {} as { [id: string]: boolean })));
 	}
 
 	private unsetUninstalled(extensionIdentifier: ExtensionIdentifierWithVersion): Promise<void> {
@@ -748,6 +745,6 @@ export class ExtensionManagementService extends Disposable implements IExtension
 				]
 			}
 		*/
-		this.telemetryService.publicLogError(eventName, { ...extensionData, success: !error, duration, errorcode });
+		this.telemetryService.publicLogError(eventName, assign(extensionData, { success: !error, duration, errorcode }));
 	}
 }

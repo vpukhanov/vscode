@@ -88,7 +88,7 @@ function webviewPreloads() {
 				}
 			}
 
-			// TODO@connor4312: should script with src not be removed?
+			// TODO: should script with src not be removed?
 			container.appendChild(scriptTag).parentNode!.removeChild(scriptTag);
 		}
 	};

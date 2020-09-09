@@ -147,19 +147,12 @@ interface IWindowIndicator {
 	command?: string;
 }
 
-enum ColorScheme {
-	DARK = 'dark',
-	LIGHT = 'light',
-	HIGH_CONTRAST = 'hc'
-}
-
-
 interface IInitialColorTheme {
 
 	/**
 	 * Initial color theme type.
 	 */
-	themeType: ColorScheme;
+	themeType: 'light' | 'dark' | 'hc';
 
 	/**
 	 * A list of workbench colors to apply initially.

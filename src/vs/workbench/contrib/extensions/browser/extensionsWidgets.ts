@@ -6,7 +6,7 @@
 import 'vs/css!./media/extensionsWidgets';
 import { Disposable, toDisposable, DisposableStore, MutableDisposable } from 'vs/base/common/lifecycle';
 import { IExtension, IExtensionsWorkbenchService, IExtensionContainer } from 'vs/workbench/contrib/extensions/common/extensions';
-import { append, $ } from 'vs/base/browser/dom';
+import { append, $, addClass, removeNode } from 'vs/base/browser/dom';
 import * as platform from 'vs/base/common/platform';
 import { localize } from 'vs/nls';
 import { IExtensionRecommendationsService, IExtensionManagementServerService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
@@ -50,7 +50,7 @@ export class InstallCountWidget extends ExtensionWidget {
 		@IExtensionsWorkbenchService extensionsWorkbenchService: IExtensionsWorkbenchService
 	) {
 		super();
-		container.classList.add('extension-install-count');
+		addClass(container, 'extension-install-count');
 		this.render();
 	}
 
@@ -95,10 +95,10 @@ export class RatingsWidget extends ExtensionWidget {
 		private small: boolean
 	) {
 		super();
-		container.classList.add('extension-ratings');
+		addClass(container, 'extension-ratings');
 
 		if (this.small) {
-			container.classList.add('small');
+			addClass(container, 'small');
 		}
 
 		this.render();
@@ -325,7 +325,7 @@ export class ExtensionPackCountWidget extends ExtensionWidget {
 
 	private clear(): void {
 		if (this.element) {
-			this.element.remove();
+			removeNode(this.element);
 		}
 	}
 

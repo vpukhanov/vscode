@@ -12,8 +12,7 @@ import { TokenTheme } from 'vs/editor/common/modes/supports/tokenization';
 import { ILineTokens, IToken, TokenizationSupport2Adapter, TokensProvider } from 'vs/editor/standalone/browser/standaloneLanguages';
 import { IStandaloneTheme, IStandaloneThemeData, IStandaloneThemeService } from 'vs/editor/standalone/common/standaloneThemeService';
 import { ColorIdentifier } from 'vs/platform/theme/common/colorRegistry';
-import { ColorScheme } from 'vs/platform/theme/common/theme';
-import { IFileIconTheme, IColorTheme, ITokenStyle } from 'vs/platform/theme/common/themeService';
+import { IFileIconTheme, IColorTheme, LIGHT, ITokenStyle } from 'vs/platform/theme/common/themeService';
 
 suite('TokenizationSupport2Adapter', () => {
 
@@ -47,9 +46,9 @@ suite('TokenizationSupport2Adapter', () => {
 
 				tokenTheme: new MockTokenTheme(),
 
-				themeName: ColorScheme.LIGHT,
+				themeName: LIGHT,
 
-				type: ColorScheme.LIGHT,
+				type: LIGHT,
 
 				getColor: (color: ColorIdentifier, useDefault?: boolean): Color => {
 					throw new Error('Not implemented');

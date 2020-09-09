@@ -64,7 +64,7 @@ export class StartDebugQuickAccessProvider extends PickerQuickAccessProvider<IPi
 						return TriggerAction.CLOSE_PICKER;
 					},
 					accept: async () => {
-						await this.debugService.getConfigurationManager().selectConfiguration(config.launch, config.name);
+						this.debugService.getConfigurationManager().selectConfiguration(config.launch, config.name);
 						try {
 							await this.debugService.startDebugging(config.launch);
 						} catch (error) {

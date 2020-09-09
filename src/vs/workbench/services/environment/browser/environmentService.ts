@@ -8,14 +8,13 @@ import { joinPath } from 'vs/base/common/resources';
 import { URI } from 'vs/base/common/uri';
 import { generateUuid } from 'vs/base/common/uuid';
 import { IExtensionHostDebugParams } from 'vs/platform/environment/common/environment';
-import { IPath, IWindowConfiguration } from 'vs/platform/windows/common/windows';
+import { ColorScheme, IPath, IWindowConfiguration } from 'vs/platform/windows/common/windows';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 import { IWorkbenchConstructionOptions as IWorkbenchOptions } from 'vs/workbench/workbench.web.api';
 import product from 'vs/platform/product/common/product';
 import { memoize } from 'vs/base/common/decorators';
 import { onUnexpectedError } from 'vs/base/common/errors';
 import { parseLineAndColumnAware } from 'vs/base/common/extpath';
-import { ColorScheme } from 'vs/platform/theme/common/theme';
 
 class BrowserWorkbenchConfiguration implements IWindowConfiguration {
 
@@ -77,7 +76,7 @@ class BrowserWorkbenchConfiguration implements IWindowConfiguration {
 			return ColorScheme.DARK;
 		}
 
-		return ColorScheme.LIGHT;
+		return ColorScheme.DEFAULT;
 	}
 }
 

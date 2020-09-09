@@ -57,7 +57,7 @@ class MessageWidget {
 		domNode.className = 'descriptioncontainer';
 
 		this._messageBlock = document.createElement('div');
-		this._messageBlock.classList.add('message');
+		dom.addClass(this._messageBlock, 'message');
 		this._messageBlock.setAttribute('aria-live', 'assertive');
 		this._messageBlock.setAttribute('role', 'alert');
 		domNode.appendChild(this._messageBlock);
@@ -123,19 +123,19 @@ class MessageWidget {
 		}
 		if (source || code) {
 			const detailsElement = document.createElement('span');
-			detailsElement.classList.add('details');
+			dom.addClass(detailsElement, 'details');
 			lastLineElement.appendChild(detailsElement);
 			if (source) {
 				const sourceElement = document.createElement('span');
 				sourceElement.innerText = source;
-				sourceElement.classList.add('source');
+				dom.addClass(sourceElement, 'source');
 				detailsElement.appendChild(sourceElement);
 			}
 			if (code) {
 				if (typeof code === 'string') {
 					const codeElement = document.createElement('span');
 					codeElement.innerText = `(${code})`;
-					codeElement.classList.add('code');
+					dom.addClass(codeElement, 'code');
 					detailsElement.appendChild(codeElement);
 				} else {
 					this._codeLink = dom.$('a.code-link');
@@ -166,7 +166,7 @@ class MessageWidget {
 				let container = document.createElement('div');
 
 				let relatedResource = document.createElement('a');
-				relatedResource.classList.add('filename');
+				dom.addClass(relatedResource, 'filename');
 				relatedResource.innerText = `${getBaseLabel(related.resource)}(${related.startLineNumber}, ${related.startColumn}): `;
 				relatedResource.title = getPathLabel(related.resource, undefined);
 				this._relatedDiagnostics.set(relatedResource, related);
@@ -318,7 +318,7 @@ export class MarkerNavigationWidget extends PeekViewWidget {
 
 	protected _fillBody(container: HTMLElement): void {
 		this._parentContainer = container;
-		container.classList.add('marker-widget');
+		dom.addClass(container, 'marker-widget');
 		this._parentContainer.tabIndex = 0;
 		this._parentContainer.setAttribute('role', 'tooltip');
 

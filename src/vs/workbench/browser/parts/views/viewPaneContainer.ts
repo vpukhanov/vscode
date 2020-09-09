@@ -9,7 +9,7 @@ import { Event, Emitter } from 'vs/base/common/event';
 import { ColorIdentifier, activeContrastBorder, foreground } from 'vs/platform/theme/common/colorRegistry';
 import { attachStyler, IColorMapping, attachButtonStyler, attachLinkStyler, attachProgressBarStyler } from 'vs/platform/theme/common/styler';
 import { SIDE_BAR_DRAG_AND_DROP_BACKGROUND, SIDE_BAR_SECTION_HEADER_FOREGROUND, SIDE_BAR_SECTION_HEADER_BACKGROUND, SIDE_BAR_SECTION_HEADER_BORDER, PANEL_BACKGROUND, SIDE_BAR_BACKGROUND, PANEL_SECTION_HEADER_FOREGROUND, PANEL_SECTION_HEADER_BACKGROUND, PANEL_SECTION_HEADER_BORDER, PANEL_SECTION_DRAG_AND_DROP_BACKGROUND, PANEL_SECTION_BORDER } from 'vs/workbench/common/theme';
-import { after, append, $, trackFocus, EventType, isAncestor, Dimension, addDisposableListener, createCSSRule, asCSSUrl, addClasses } from 'vs/base/browser/dom';
+import { after, append, $, trackFocus, toggleClass, EventType, isAncestor, Dimension, addDisposableListener, removeClass, addClass, createCSSRule, asCSSUrl, addClasses } from 'vs/base/browser/dom';
 import { IDisposable, combinedDisposable, dispose, toDisposable, Disposable, DisposableStore } from 'vs/base/common/lifecycle';
 import { IAction, Separator, IActionViewItem } from 'vs/base/common/actions';
 import { ActionsOrientation, prepareActions } from 'vs/base/browser/ui/actionbar/actionbar';
@@ -237,7 +237,7 @@ export abstract class ViewPane extends Pane implements IView {
 
 	set headerVisible(visible: boolean) {
 		super.headerVisible = visible;
-		this.element.classList.toggle('merged-header', !visible);
+		toggleClass(this.element, 'merged-header', !visible);
 	}
 
 	setVisible(visible: boolean): void {
@@ -293,7 +293,7 @@ export abstract class ViewPane extends Pane implements IView {
 		this.renderHeaderTitle(container, this.title);
 
 		const actions = append(container, $('.actions'));
-		actions.classList.toggle('show', this.showActionsAlways);
+		toggleClass(actions, 'show', this.showActionsAlways);
 		this.toolbar = new ToolBar(actions, this.contextMenuService, {
 			orientation: ActionsOrientation.HORIZONTAL,
 			actionViewItemProvider: action => this.getActionViewItem(action),
@@ -356,7 +356,7 @@ export abstract class ViewPane extends Pane implements IView {
 				-webkit-mask-size: 16px;
 			`);
 		} else if (isString(icon)) {
-			this.iconContainer.classList.add('codicon');
+			addClass(this.iconContainer, 'codicon');
 			cssClass = icon;
 		}
 
@@ -488,7 +488,7 @@ export abstract class ViewPane extends Pane implements IView {
 			return;
 		}
 		const shouldAlwaysShowActions = this.configurationService.getValue<boolean>('workbench.view.alwaysShowHeaderActions');
-		this.headerContainer.classList.toggle('actions-always-visible', shouldAlwaysShowActions);
+		toggleClass(this.headerContainer, 'actions-always-visible', shouldAlwaysShowActions);
 	}
 
 	protected updateActions(): void {
@@ -533,7 +533,7 @@ export abstract class ViewPane extends Pane implements IView {
 		this.viewWelcomeDisposable.dispose();
 
 		if (!this.shouldShowWelcome()) {
-			this.bodyContainer.classList.remove('welcome');
+			removeClass(this.bodyContainer, 'welcome');
 			this.viewWelcomeContainer.innerText = '';
 			this.scrollableElement.scanDomNode();
 			return;
@@ -542,14 +542,14 @@ export abstract class ViewPane extends Pane implements IView {
 		const contents = this.viewWelcomeController.contents;
 
 		if (contents.length === 0) {
-			this.bodyContainer.classList.remove('welcome');
+			removeClass(this.bodyContainer, 'welcome');
 			this.viewWelcomeContainer.innerText = '';
 			this.scrollableElement.scanDomNode();
 			return;
 		}
 
 		const disposables = new DisposableStore();
-		this.bodyContainer.classList.add('welcome');
+		addClass(this.bodyContainer, 'welcome');
 		this.viewWelcomeContainer.innerText = '';
 
 		let buttonIndex = 0;
@@ -679,15 +679,15 @@ class ViewPaneDropOverlay extends Themable {
 
 		// Parent
 		this.paneElement.appendChild(this.container);
-		this.paneElement.classList.add('dragged-over');
+		addClass(this.paneElement, 'dragged-over');
 		this._register(toDisposable(() => {
 			this.paneElement.removeChild(this.container);
-			this.paneElement.classList.remove('dragged-over');
+			removeClass(this.paneElement, 'dragged-over');
 		}));
 
 		// Overlay
 		this.overlay = document.createElement('div');
-		this.overlay.classList.add('pane-overlay-indicator');
+		addClass(this.overlay, 'pane-overlay-indicator');
 		this.container.appendChild(this.overlay);
 
 		// Overlay Event Handling
@@ -818,7 +818,7 @@ class ViewPaneDropOverlay extends Themable {
 		this.overlay.style.opacity = '1';
 
 		// Enable transition after a timeout to prevent initial animation
-		setTimeout(() => this.overlay.classList.add('overlay-move-transition'), 0);
+		setTimeout(() => addClass(this.overlay, 'overlay-move-transition'), 0);
 
 		// Remember as current split direction
 		this._currentDropOperation = dropDirection;

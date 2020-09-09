@@ -4,15 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Event, Emitter } from 'vs/base/common/event';
-import { IThemeService, IColorTheme, IFileIconTheme, ITokenStyle } from 'vs/platform/theme/common/themeService';
+import { IThemeService, IColorTheme, DARK, IFileIconTheme, ITokenStyle } from 'vs/platform/theme/common/themeService';
 import { Color } from 'vs/base/common/color';
-import { ColorScheme } from 'vs/platform/theme/common/theme';
 
 export class TestColorTheme implements IColorTheme {
 
 	public readonly label = 'test';
 
-	constructor(private colors: { [id: string]: string; } = {}, public type = ColorScheme.DARK) {
+	constructor(private colors: { [id: string]: string; } = {}, public type = DARK) {
 	}
 
 	getColor(color: string, useDefault?: boolean): Color | undefined {

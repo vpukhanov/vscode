@@ -7,6 +7,7 @@ import { Emitter } from 'vs/base/common/event';
 import { parse } from 'vs/base/common/json';
 import { Disposable } from 'vs/base/common/lifecycle';
 import * as network from 'vs/base/common/network';
+import { assign } from 'vs/base/common/objects';
 import { URI } from 'vs/base/common/uri';
 import { getCodeEditor, ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { IPosition } from 'vs/editor/common/core/position';
@@ -345,7 +346,7 @@ export class PreferencesService extends Disposable implements IPreferencesServic
 				if (!options) {
 					options = { pinned: true };
 				} else {
-					options = { ...options, pinned: true };
+					options = assign(options, { pinned: true });
 				}
 
 				if (openDefaultSettings) {
@@ -367,7 +368,7 @@ export class PreferencesService extends Disposable implements IPreferencesServic
 				if (!options) {
 					options = { pinned: true };
 				} else {
-					options = { ...options, pinned: true };
+					options = assign(options, { pinned: true });
 				}
 
 				const defaultPreferencesEditorInput = this.instantiationService.createInstance(DefaultPreferencesEditorInput, this.getDefaultSettingsResource(configurationTarget));

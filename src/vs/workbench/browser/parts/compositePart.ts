@@ -7,6 +7,7 @@ import 'vs/css!./media/compositepart';
 import * as nls from 'vs/nls';
 import { defaultGenerator } from 'vs/base/common/idGenerator';
 import { IDisposable, dispose, DisposableStore, MutableDisposable } from 'vs/base/common/lifecycle';
+import * as strings from 'vs/base/common/strings';
 import { Emitter } from 'vs/base/common/event';
 import * as errors from 'vs/base/common/errors';
 import { ToolBar } from 'vs/base/browser/ui/toolbar/toolbar';
@@ -28,7 +29,7 @@ import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { attachProgressBarStyler } from 'vs/platform/theme/common/styler';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { Dimension, append, $, hide, show, addClasses } from 'vs/base/browser/dom';
+import { Dimension, append, $, addClass, hide, show, addClasses } from 'vs/base/browser/dom';
 import { AnchorAlignment } from 'vs/base/browser/ui/contextview/contextview';
 import { assertIsDefined, withNullAsUndefined } from 'vs/base/common/types';
 
@@ -383,7 +384,7 @@ export abstract class CompositePart<T extends Composite> extends Part {
 
 		// Title Area Container
 		const titleArea = append(parent, $('.composite'));
-		titleArea.classList.add('title');
+		addClass(titleArea, 'title');
 
 		// Left Title Label
 		this.titleLabel = this.createTitleLabel(titleArea);
@@ -412,8 +413,8 @@ export abstract class CompositePart<T extends Composite> extends Part {
 
 		const $this = this;
 		return {
-			updateTitle: (_id, title, keybinding) => {
-				titleLabel.innerText = title;
+			updateTitle: (id, title, keybinding) => {
+				titleLabel.innerHTML = strings.escape(title);
 				titleLabel.title = keybinding ? nls.localize('titleTooltip', "{0} ({1})", title, keybinding) : title;
 			},
 

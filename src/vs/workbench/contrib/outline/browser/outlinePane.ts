@@ -10,7 +10,7 @@ import { createCancelablePromise, TimeoutTimer } from 'vs/base/common/async';
 import { isPromiseCanceledError } from 'vs/base/common/errors';
 import { Emitter, Event } from 'vs/base/common/event';
 import { defaultGenerator } from 'vs/base/common/idGenerator';
-import { IDisposable, toDisposable, DisposableStore, MutableDisposable } from 'vs/base/common/lifecycle';
+import { dispose, IDisposable, toDisposable, DisposableStore, MutableDisposable } from 'vs/base/common/lifecycle';
 import { LRUCache } from 'vs/base/common/map';
 import { escape } from 'vs/base/common/strings';
 import 'vs/css!./outlinePane';
@@ -280,9 +280,9 @@ export class OutlinePane extends ViewPane {
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
-		this._requestOracle?.dispose();
-		this._editorDisposables.dispose();
+		dispose(this._disposables);
+		dispose(this._requestOracle);
+		dispose(this._editorDisposables);
 		super.dispose();
 	}
 
@@ -395,7 +395,7 @@ export class OutlinePane extends ViewPane {
 			if (visible && !this._requestOracle) {
 				this._requestOracle = this._instantiationService.createInstance(RequestOracle, (editor, event) => this._doUpdate(editor, event), DocumentSymbolProviderRegistry);
 			} else if (!visible) {
-				this._requestOracle?.dispose();
+				dispose(this._requestOracle);
 				this._requestOracle = undefined;
 				this._doUpdate(undefined, undefined);
 			}
@@ -495,7 +495,7 @@ export class OutlinePane extends ViewPane {
 		this._progressBar.infinite().show(requestDelay);
 
 		const createdModel = await OutlinePane._createOutlineModel(textModel, this._editorDisposables);
-		loadingMessage?.dispose();
+		dispose(loadingMessage);
 		if (!createdModel) {
 			return;
 		}

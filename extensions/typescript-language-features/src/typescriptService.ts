@@ -145,14 +145,9 @@ export interface ITypeScriptServiceClient {
 	/**
 	 * Tries to ensure that a vscode document is open on the TS server.
 	 *
-	 * @return The normalized path or `undefined` if the document is not open on the server.
+	 * Returns the normalized path.
 	 */
 	toOpenedFilePath(document: vscode.TextDocument): string | undefined;
-
-	/**
-	 * Checks if `resource` has a given capability.
-	 */
-	hasCapabilityForResource(resource: vscode.Uri, capability: ClientCapability): boolean;
 
 	getWorkspaceRootForResource(resource: vscode.Uri): string | undefined;
 

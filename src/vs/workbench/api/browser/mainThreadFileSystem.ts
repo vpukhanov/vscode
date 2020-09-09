@@ -34,7 +34,7 @@ export class MainThreadFileSystem implements MainThreadFileSystemShape {
 	}
 
 	$unregisterProvider(handle: number): void {
-		this._fileProvider.get(handle)?.dispose();
+		dispose(this._fileProvider.get(handle));
 		this._fileProvider.delete(handle);
 	}
 

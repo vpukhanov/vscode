@@ -36,47 +36,44 @@ export class CodeLensModel {
 	}
 }
 
-export async function getCodeLensModel(model: ITextModel, token: CancellationToken): Promise<CodeLensModel> {
+export function getCodeLensData(model: ITextModel, token: CancellationToken): Promise<CodeLensModel> {
 
 	const provider = CodeLensProviderRegistry.ordered(model);
 	const providerRanks = new Map<CodeLensProvider, number>();
 	const result = new CodeLensModel();
 
-	const promises = provider.map(async (provider, i) => {
+	const promises = provider.map((provider, i) => {
 
 		providerRanks.set(provider, i);
 
-		try {
-			const list = await Promise.resolve(provider.provideCodeLenses(model, token));
-			if (list) {
-				result.add(list, provider);
+		return Promise.resolve(provider.provideCodeLenses(model, token))
+			.then(list => list && result.add(list, provider))
+			.catch(onUnexpectedExternalError);
+	});
+
+	return Promise.all(promises).then(() => {
+
+		result.lenses = mergeSort(result.lenses, (a, b) => {
+			// sort by lineNumber, provider-rank, and column
+			if (a.symbol.range.startLineNumber < b.symbol.range.startLineNumber) {
+				return -1;
+			} else if (a.symbol.range.startLineNumber > b.symbol.range.startLineNumber) {
+				return 1;
+			} else if (providerRanks.get(a.provider)! < providerRanks.get(b.provider)!) {
+				return -1;
+			} else if (providerRanks.get(a.provider)! > providerRanks.get(b.provider)!) {
+				return 1;
+			} else if (a.symbol.range.startColumn < b.symbol.range.startColumn) {
+				return -1;
+			} else if (a.symbol.range.startColumn > b.symbol.range.startColumn) {
+				return 1;
+			} else {
+				return 0;
 			}
-		} catch (err) {
-			onUnexpectedExternalError(err);
-		}
-	});
+		});
 
-	await Promise.all(promises);
-
-	result.lenses = mergeSort(result.lenses, (a, b) => {
-		// sort by lineNumber, provider-rank, and column
-		if (a.symbol.range.startLineNumber < b.symbol.range.startLineNumber) {
-			return -1;
-		} else if (a.symbol.range.startLineNumber > b.symbol.range.startLineNumber) {
-			return 1;
-		} else if ((providerRanks.get(a.provider)!) < (providerRanks.get(b.provider)!)) {
-			return -1;
-		} else if ((providerRanks.get(a.provider)!) > (providerRanks.get(b.provider)!)) {
-			return 1;
-		} else if (a.symbol.range.startColumn < b.symbol.range.startColumn) {
-			return -1;
-		} else if (a.symbol.range.startColumn > b.symbol.range.startColumn) {
-			return 1;
-		} else {
-			return 0;
-		}
+		return result;
 	});
-	return result;
 }
 
 registerLanguageCommand('_executeCodeLensProvider', function (accessor, args) {
@@ -93,7 +90,7 @@ registerLanguageCommand('_executeCodeLensProvider', function (accessor, args) {
 
 	const result: CodeLens[] = [];
 	const disposables = new DisposableStore();
-	return getCodeLensModel(model, CancellationToken.None).then(value => {
+	return getCodeLensData(model, CancellationToken.None).then(value => {
 
 		disposables.add(value);
 		let resolve: Promise<any>[] = [];
